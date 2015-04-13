@@ -140,30 +140,30 @@ var connected = false;
 // 当前登录的JID
 var jid = "";
 
-// 连接状态改变的事件  
+// 连接状态改变的事件
 function onConnect(status) {
-    if (status == Strophe.Status.CONNFAIL) {  
-        alert("连接失败！");  
-    } else if (status == Strophe.Status.AUTHFAIL) {  
-        alert("登录失败！");  
-    } else if (status == Strophe.Status.DISCONNECTED) {  
-        alert("连接断开！");  
-        connected = false;  
-    } else if (status == Strophe.Status.CONNECTED) {  
-        connected = true;  
-          
-        // 当接收到<message>节，调用onMessage回调函数  
-        connection.addHandler(onMessage, null, 'message', null, null, null);  
-          
-        // 首先要发送一个<presence>给服务器（initial presence）  
-        connection.send($pres().tree());  
-  
-        // 发送<presence>元素，加入房间  
-        connection.send($pres({  
-            from: jid,  
-            to: ROOM_JID + "/" + jid.substring(0,jid.indexOf("@"))  
-        }).c('x',{xmlns: 'http://jabber.org/protocol/muc'}).tree());  
-    }  
+    if (status == Strophe.Status.CONNFAIL) {
+        alert("连接失败！");
+    } else if (status == Strophe.Status.AUTHFAIL) {
+        alert("登录失败！");
+    } else if (status == Strophe.Status.DISCONNECTED) {
+        alert("连接断开！");
+        connected = false;
+    } else if (status == Strophe.Status.CONNECTED) {
+        connected = true;
+
+        // 当接收到<message>节，调用onMessage回调函数
+        connection.addHandler(onMessage, null, 'message', null, null, null);
+
+        // 首先要发送一个<presence>给服务器（initial presence
+        connection.send($pres().tree());
+
+        // 发送<presence>元素，加入房间
+        connection.send($pres({
+            from: jid,
+            to: ROOM_JID + "/" + jid.substring(0,jid.indexOf("@"))
+        }).c('x',{xmlns: 'http://jabber.org/protocol/muc'}).tree());
+    }
 }  
   
 // 接收到<message>  
