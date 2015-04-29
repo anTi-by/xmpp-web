@@ -1,9 +1,13 @@
-var BOSH_SERVICE = 'http://192.168.0.27:5280';
-var ROOM_JID = '54f95f124c165e9824000dab@muc.192.168.0.27';
+var server = $.cookie('server');
+var room_name = $.cookie('room_name') || '54f95f124c165e9824000dab';
+var BOSH_SERVICE = 'http://' + server +':5280';
+var ROOM_JID = room_name + '@muc.' + server;
+var ADMIN_JID = 'admin@' + server;
 var connection = null;
 var connected = false;
 var jid = "";
 var i = 0;
+var resource = 'web';
 
 function add_message(name,img,msg,clear) {
 	i = i + 1;
@@ -34,6 +38,7 @@ function onConnect(status) {
     } else if (status == Strophe.Status.DISCONNECTED) {
         alert("连接断开！");
         connected = false;
+        logout();
     } else if (status == Strophe.Status.CONNECTED) {
         connected = true;
 
@@ -57,10 +62,12 @@ function onMessage(msg) {
     var from = msg.getAttribute('from');
     var type = msg.getAttribute('type');
     var elems = msg.getElementsByTagName('params');
+    var msgID = msg.getAttribute('id')
 
     if (type == "groupchat" && elems.length > 0) {
     	var body = elems[0].firstChild;
         add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', Strophe.getText(body), true);
+        buildACKMessageWithMID(msgID);
     }
 
     return true;
@@ -81,6 +88,7 @@ function logout() {
     // 清空cookie
     $.removeCookie('username');
     $.removeCookie('password');
+    $.removeCookie('server');
     window.location.href = './login.html';
 }
 
@@ -118,6 +126,24 @@ function send(val) {
         logout();
     }
 }
+
+// 获取当前时间
+function getCurrentTime() {
+    var today = new Date();
+    var s1=today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+    return s1;
+}
+
+// 群聊消息回执
+function buildACKMessageWithMID(mid) {
+    var attr = [['xmlns', 'http://yonglang.co/xmpp/client/reveived'], ['id', mid], ['stamp', getCurrentTime()]];
+    var msg = $msg({
+        to: ADMIN_JID,
+        from: jid,
+        type: 'groupchat'
+    }).c('received', attr, null);
+    connection.send(msg.tree());
+}
   
 $(document).ready(function() {
   
@@ -133,7 +159,8 @@ $(document).ready(function() {
     } else {
     	if(!connected) {
 	        connection = new Strophe.Connection(BOSH_SERVICE);
-	        connection.connect(username, password, onConnect);
+            username = username + '@' + server + '/' + resource
+            connection.connect(username, password, onConnect);
 	        jid = username;
 	    }
     }
