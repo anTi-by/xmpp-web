@@ -89,7 +89,7 @@ function logout() {
     $.removeCookie('username');
     $.removeCookie('password');
     $.removeCookie('server');
-    window.location.href = './login.html';
+    window.location.href = './';
 }
 
 function remove_user(userid,name) {
@@ -154,14 +154,16 @@ $(document).ready(function() {
         (typeof(username) == 'undefined') || 
         (typeof(password) == 'undefined')) {
 
-	     window.location.href = "./login.html";
+	     window.location.href = "./";
 	     return ;
     } else {
     	if(!connected) {
 	        connection = new Strophe.Connection(BOSH_SERVICE);
+            $('.panel-content li span').text(username)
             username = username + '@' + server + '/' + resource
             connection.connect(username, password, onConnect);
-	        jid = username;
+            jid = username;
+
 	    }
     }
 
