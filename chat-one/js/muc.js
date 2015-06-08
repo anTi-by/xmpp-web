@@ -1,13 +1,12 @@
 var server = $.cookie('server');
-var room_name = $.cookie('room_name') || '54f95f124c165e9824000dab';
 var BOSH_SERVICE = 'http://' + server +':5280';
-var ROOM_JID = room_name + '@muc.' + server;
 var ADMIN_JID = 'admin@' + server;
 var connection = null;
 var connected = false;
 var jid = "";
 var i = 0;
 var resource = 'web';
+var tochatJID = $.cookie('tochatJID') + '@' + server + '/' + resource;
 
 function add_message(name,img,msg,clear) {
 	i = i + 1;
@@ -44,30 +43,30 @@ function onConnect(status) {
 
         // 当接收到<message>节，调用onMessage回调函数
         connection.addHandler(onMessage, null, 'message', null, null, null);
+        connection.addHandler(onIq, null, 'iq', null, null, null)
 
         // 首先要发送一个<presence>给服务器（initial presence
         connection.send($pres().tree());
-
-        // 发送<presence>元素，加入房间
-        connection.send($pres({
-            from: jid,
-            to: ROOM_JID + "/" + jid.substring(0,jid.indexOf("@"))
-        }).c('x',{xmlns: 'http://jabber.org/protocol/muc'}).tree());
     }
-}  
+}
+
+function onIq(msg) {
+    console.log('iq - msg: ' + Strophe.serialize(msg))
+}
   
 // 接收到<message>  
 function onMessage(msg) {
+    console.log('msg: ' + msg)
+
     // 解析出<message>的from、type属性，以及body子元素
     var from = msg.getAttribute('from');
     var type = msg.getAttribute('type');
     var elems = msg.getElementsByTagName('params');
     var msgID = msg.getAttribute('id')
 
-    if (type == "groupchat" && elems.length > 0) {
+    if (type == "chat" && elems.length > 0) {
     	var body = elems[0].firstChild;
         add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', Strophe.getText(body), true);
-        buildACKMessageWithMID(msgID);
     }
 
     return true;
@@ -89,6 +88,7 @@ function logout() {
     $.removeCookie('username');
     $.removeCookie('password');
     $.removeCookie('server');
+    $.removeCookie('tochatJID');
     window.location.href = './';
 }
 
@@ -111,15 +111,19 @@ function send(val) {
         // <params messagetype="0" xmlns="yl:xmpp:params"><text>aaaa</text></params> 
         var attr = [['messagetype', '0'], ['xmlns', 'yl:xmpp:params']];
         var msg = $msg({
-            to: ROOM_JID,
+            to: tochatJID,
             from: jid,
-            type: 'groupchat',
+            type: 'chat',
             id: generateMixed(10)
         }).c("body", null, val)
         .c("params", attr, null)
         .c("text", null, val);
+
+        console.log(msg.tree())
+
         connection.send(msg.tree());
 
+        add_message(jid.substring(jid.indexOf('/') + 1), 'img/demo/av1.jpg', val, true);
         $("#input-msg").val('');
     } else {
         alert("请先登录！");
@@ -127,22 +131,26 @@ function send(val) {
     }
 }
 
-// 获取当前时间
-function getCurrentTime() {
-    var today = new Date();
-    var s1=today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
-    return s1;
-}
+function getHistoryMessage() {
+    if(connected) {
 
-// 群聊消息回执
-function buildACKMessageWithMID(mid) {
-    var attr = [['xmlns', 'http://yonglang.co/xmpp/client/reveived'], ['id', mid], ['stamp', getCurrentTime()]];
-    var msg = $msg({
-        to: ADMIN_JID,
-        from: jid,
-        type: 'groupchat'
-    }).c('received', attr, null);
-    connection.send(msg.tree());
+        var attr = [['xmlns', 'urn:xmpp:archive'], ['with', '54f95f124c165e9824000dab@muc.192.168.0.31'], ['start', '2015-06-08T00:00:00.000Z']];
+        var set = [['xmlns', 'http://jabber.org/protocol/rsm']]
+
+        var msg = $iq({
+            type: 'get',
+            id: generateMixed(10)
+        }).c('retrieve', attr, null)
+        .c('set', set, null)
+        .c('max', 30, null);
+
+        console.log(msg.tree())
+
+        connection.send(msg.tree());
+    } else {
+        alert("请先登录！");
+        logout();
+    }
 }
   
 $(document).ready(function() {
@@ -180,6 +188,10 @@ $(document).ready(function() {
   			}
   		}
 	});
+
+    $('#history-message button').click(function() {
+        getHistoryMessage();
+    });
 
     // 退出
     $("#logout").click(function() {
