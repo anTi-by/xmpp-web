@@ -43,7 +43,7 @@ function onConnect(status) {
 
         // 当接收到<message>节，调用onMessage回调函数
         connection.addHandler(onMessage, null, 'message', null, null, null);
-        connection.addHandler(onIq, null, 'iq', null, null, null)
+        connection.addHandler(onIq, null, 'iq', null, null, null);
 
         // 首先要发送一个<presence>给服务器（initial presence
         connection.send($pres().tree());
@@ -56,7 +56,7 @@ function onIq(msg) {
   
 // 接收到<message>  
 function onMessage(msg) {
-    console.log('msg: ' + msg)
+    console.log('msg: ' + Strophe.serialize(msg))
 
     // 解析出<message>的from、type属性，以及body子元素
     var from = msg.getAttribute('from');
@@ -152,6 +152,58 @@ function getHistoryMessage() {
         logout();
     }
 }
+
+function pushsub01() {
+    if (connected) {
+
+        // 创建节点
+        // connection.pubsub.createNode('XMPP_NODE1', {'title': 'HelloWorld', 'summary': 'helloworld'})
+
+        // 获取节点配置
+        connection.pubsub.getConfig('XMPP_NODE1');
+
+        // // 获取好友列表
+        // var msg = $iq({
+        //     id: generateMixed(10),
+        //     type: 'get'
+        // }).c('query', {'xmlns': 'jabber:iq:roster'});
+
+    } else {
+        alert("请先登陆！");
+        logout();
+    }
+}
+
+function subscribe01() {
+    if (connected) {
+        connection.pubsub.subscribe('XMPP_NODE1');
+    } else {
+        alert("请先登陆！");
+        logout();
+    }
+}
+
+function pushpub() {
+    if (connected) {
+        var entry = new Strophe.Builder('entry', {
+            xmlns: 'http://www.w3.org/2005/Atom'
+        }).c('title', null, 'hahahaha')
+        .c('summary', null, 'To be, or not to be')
+        .c('link', {'rel': 'alternate', 'type': 'text/html', 'href': 'http://denmark.lit/2003/12/13/atom03'})
+        .up()
+        .c('id', null, 'tag:denmark.lit,2003:entry-32397')
+        .c('published', null, '2003-12-13T18:30:02Z')
+        .c('updated', null, '2003-12-13T18:30:02Z');
+        console.log('entry: ' + entry)
+        connection.pubsub.publish('XMPP_NODE1', [{
+            attrs: ['id', 'title', 'summary'],
+            data: [entry]
+        }]);
+    } else {
+        alert("请先登陆！");
+        logout();
+    }
+}
   
 $(document).ready(function() {
   
@@ -189,8 +241,24 @@ $(document).ready(function() {
   		}
 	});
 
-    $('#history-message button').click(function() {
+    // 获取历史记录
+    $('#history-message #button').click(function() {
         getHistoryMessage();
+    });
+
+    // 创建节点
+    $('#history-message #pubsub').click(function() {
+        pushsub01();
+    });
+
+    // 订阅节点
+    $('#history-message #subscribe').click(function() {
+        subscribe01();
+    });
+
+    // 发布
+    $('#history-message #pushpub').click(function() {
+        pushpub();
     });
 
     // 退出
