@@ -20,7 +20,8 @@ function add_message(name,img,msg,clear) {
 	var id = 'msg-'+i;
     var idname = name.replace(' ','-').toLowerCase();
 	inner.append('<p id="'+id+'" class="user-'+idname+'">'
-									+'<span class="msg-block"><img src="'+img+'" alt="" /><strong>'+name+'</strong> <span class="time">- '+hours+':'+minutes+'</span>'
+									+'<span class="msg-block"><img src="'+img+'" alt="" /><strong>'+name+'</strong>'
+                                    +'<span class="time">- '+hours+':'+minutes+'</span>'
 									+'<span class="msg">'+msg+'</span></span></p>');
 	$('#'+id).hide().fadeIn(800);
 	if(clear) {
@@ -58,6 +59,7 @@ function onConnect(status) {
   
 // 接收到<message>  
 function onMessage(msg) {
+    console.log('回执: ' + Strophe.serialize(msg))
     // 解析出<message>的from、type属性，以及body子元素
     var from = msg.getAttribute('from');
     var type = msg.getAttribute('type');
@@ -142,6 +144,8 @@ function buildACKMessageWithMID(mid) {
         from: jid,
         type: 'groupchat'
     }).c('received', attr, null);
+
+    console.log('消息回复: ' + Strophe.serialize(msg))
     connection.send(msg.tree());
 }
   
