@@ -8,6 +8,7 @@ var connected = false;
 var jid = "";
 var i = 0;
 var resource = 'web';
+var isExtension = true
 
 function add_message(name,img,msg,clear) {
 	i = i + 1;
@@ -63,16 +64,58 @@ function onMessage(msg) {
     // 解析出<message>的from、type属性，以及body子元素
     var from = msg.getAttribute('from');
     var type = msg.getAttribute('type');
-    var elems = msg.getElementsByTagName('params');
-    var msgID = msg.getAttribute('id')
 
-    if (type == "groupchat" && elems.length > 0) {
-    	var body = elems[0].firstChild;
-        add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', Strophe.getText(body), true);
-        buildACKMessageWithMID(msgID);
+    if (isExtension) {
+        // 自定义节点操作
+        var elems = msg.getElementsByTagName('params');
+        var msgID = msg.getAttribute('id')
+        var messageType = elems[0].attributes[1].value
+
+        if (type == "groupchat" && elems.length > 0) {
+
+            // 自定义节点操作
+            parseMessage(messageType, from, elems)
+            buildACKMessageWithMID(msgID);
+        }
+    } else {
+        // 原生操作
+        var elems = msg.getElementsByTagName('body');
+
+        if (type == "groupchat" && elems.length > 0) {
+
+            // 原生操作
+            var body = elems[0];
+
+            add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', Strophe.getText(body), true);
+        }
     }
 
     return true;
+}
+
+function parseMessage(type, from, elems) {
+
+    // 普通文本
+    if (type === '0') {
+        var body = elems[0].firstChild;
+        add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', Strophe.getText(body), true);
+    } else if (type === '8') {
+        
+        // 大表情
+        var bigface = findElementText(elems, 'bigface')
+        var facename = findElementText(elems, 'facename')
+        var msg = '<img src="img/peoples/' + bigface + '"/><br/>';
+        add_message(from.substring(from.indexOf('/') + 1), 'img/demo/av1.jpg', msg, true);
+    }
+}
+
+function findElementText(elems, findName) {
+    var text = ''
+    $(elems).find(findName).each(function() {
+        text = $(this).text()
+    })
+
+    return text
 }
 
 var chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];

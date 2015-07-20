@@ -802,7 +802,7 @@ hr{ border-top-color:#dadada;}
 #chat-messages-inner .msg {
 	display: block;
 	margin-top: 13px;
-	border-top:1px solid #dadada;
+	/*border-top:1px solid #dadada;*/
 }
 #chat-messages-inner .msg-block:before {
 	border-right: 7px solid rgba(0,0,0,0.1);
