@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+        <title>Matrix Admin</title><meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+        <link rel="stylesheet" href="css/matrix-login.css" />
+        <link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+		<link href='css/googleapis.css' rel='stylesheet' type='text/css'>
+
+    </head>
+    <body>
+        <div id="loginbox">
+			 <div class="control-group normal_text"> <h3>WEB-chat</h3></div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="main_input_box">
+                        <span class="add-on bg_lg"><i class="icon-user"></i></span><input type="text" placeholder="Username" id="input-jid" />
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="main_input_box">
+                        <span class="add-on bg_ly"><i class="icon-lock"></i></span><input type="password" placeholder="Password" id="input-pwd" />
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="main_input_box">
+                        <span class="add-on bg_lg"><i class="icon-user"></i></span>
+                        <input type="text" placeholder="选输入要加入的房间" id="room_name" />
+                    </div>
+                    <div class="main_input_box">
+                        <span style="color: red;">默认的房间名为:54f95f124c165e9824000dab(我本地)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="main_input_box">
+                        <!-- <span class="add-on bg_ly"><i class="icon-lock"></i></span> -->
+                        <!-- <input type="password" placeholder="Password" id="input-pwd" /> -->
+                        选择要连接的服务器：<select name="sel-server" id="sel-server">
+                            <option value="192.168.0.27">192.168.0.27</option>
+                            <option value="im001.i8i8i8.com">im001.i8i8i8.com</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="main_input_box">
+                        选择聊天类型：<select name="sel-server" id="sel-server">
+                            <option value="chat">单聊</option>
+                            <option value="groupchat">群聊</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <span class="pull-right"><a type="button" href="#" class="btn btn-success" id="btn-login"/> Login</a></span>
+            </div>
+        </div>
+        
+        <script src="js/jquery.min.js"></script>  
+        <script src="js/matrix.login.js"></script>
+        <script src="js/jquery.cookie.js"></script>
+        <script src='js/login.js'></script>
+    </body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard - Bootstrap Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet" />
+    <link href="./css/font-awesome.css" rel="stylesheet" />
+    <link href="./css/adminia.css" rel="stylesheet" />
+    <link href="./css/adminia-responsive.css" rel="stylesheet" />
+    <link href="./css/pages/login.css" rel="stylesheet" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <div id="login-container">
+        <div id="login-header">
+            <!-- <h3>XMPP-WEB</h3> -->
+            <h3>
+                <img src="./img/tubiao.jpg"/>
+                <font>XMPP-WEB</font>
+            </h3>
+        </div>
+        <!-- /login-header -->
+        <div id="login-content" class="clearfix">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="username">用户名</label>
+                    <div class="controls">
+                        <input type="text" class="" id="input-jid" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">密码</label>
+                    <div class="controls">
+                        <input type="password" class="" id="input-pwd" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">请输入要聊天的账号</label>
+                    <div class="controls">
+                        <input type="text" class="" id="tochatJID" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">选择要连接的服务器：</label>
+                    <div class="controls">
+                        <select name="sel-server" id="sel-server">
+                            <option value="192.168.0.155">192.168.0.155</option>
+                            <option value="192.168.0.31">192.168.0.31</option>
+                            <option value="192.168.0.185">192.168.0.185</option>
+                            <option value="192.168.1.35">192.168.1.35</option>
+                            <option value="192.168.1.121">192.168.1.121</option>
+                            <option value="192.168.1.120">192.168.1.120</option>
+                            <option value="120.25.87.156">120.25.87.156</option>
+                            <option value="opercenter.com">opercenter.com</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">选择聊天类型：</label>
+                    <div class="controls">
+                        <select name="sel-server" id="sel-server">
+                            <option value="chat">单聊</option>
+                            <option value="groupchat">群聊</option>
+                        </select><br/>
+                        <span style="color: red;">目前支持单聊</span>
+                    </div>
+                </div>
+            </fieldset>
+            <!-- <div id="remember-me" class="pull-left">
+					<input type="checkbox" name="remember" id="remember" />
+					<label id="remember-label" for="remember">Remember Me</label>
+				</div> -->
+            <div class="pull-right">
+                <button type="submit" class="btn btn-warning btn-large" id="btn-login">
+                    Login
+                </button>
+            </div>
+        </div>
+        <!-- /login-content -->
+    </div>
+    <!-- /login-wrapper -->
+    <!-- Le javascript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./js/jquery-1.7.2.min.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src='js/login.js'></script>
+    <script src='js/date.format.js'></script>
+</body>
+</html>
